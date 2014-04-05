@@ -1,0 +1,76 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>SMARTS EDITOR</title>
+<script>
+var createjs = window;
+</script>
+
+<script src="js/jquery-1.9.1.min.js"></script>
+<script src="js/jquery-ui-1.10.3.custom.min.js"></script>
+<link rel="stylesheet" href="css/jquery-ui-1.10.3.custom.min.css" />
+<script src="js/easeljs-0.5.0.min.js"></script>
+<script src="js/atom.js"></script>
+<script src="js/api.js"></script>
+<script src="js/bond.js"></script>
+<script src="js/serialize.js"></script>
+<link rel="stylesheet" type="text/css" href="css/main.css"/>
+
+</head>
+<body onload="init()">
+<div id="main" class="ui-widget-header ui-corner-all">
+<canvas id="canvas" class="ui-corner-all" width="800px" height="600px"></canvas>
+
+<div id="rightMenu" class="ui-widget-header ui-corner-all">
+    <button id="AtomChoice" class="AtomButton" onmousedown="openAtomChoice(null)"></button>
+    <input type="checkbox" id="C" class="AtomButton" /> <label onmousedown='changeAtomType("C")' for="C">C</label>
+    <input type="checkbox" id="N" class="AtomButton" /><label onmousedown='changeAtomType("N")' for="N">N</label>
+    <input type="checkbox" id="F" class="AtomButton" /><label onmousedown='changeAtomType("F")' for="F">F</label>
+    <input type="checkbox"id="benzen" class="AtomButton" /><label onmousedown='changeAction("benzen")' for="benzen">b</label>
+    <div id="atom-bondSpace"></div>
+    <input type="checkbox" id="singleBondButton" class="AtomButton" /><label onmousedown='changeBondType("singleBond")' for="singleBondButton">-</label>
+    <input type="checkbox" id="doubleBondButton" class="AtomButton" /><label onmousedown='changeBondType("doubleBond")' for="doubleBondButton">=</label>
+    <input type="checkbox" id="tripleBondButton" class="AtomButton" /><label onmousedown='changeBondType("tripleBond")' for="tripleBondButton">≡</label>
+    <input type="checkbox" id="aromaticBondButton" class="AtomButton" /><label onmousedown='changeBondType("aromaticBond")' for="aromaticBondButton">~</label>
+</div>
+<div id="atomInfoDiv">
+    <table id="atomInfoTable" class="ui-corner-all">
+    	<tr><td class="ui-widget-header ui-corner-all">Aliphatic</td></tr>
+        <tr><td id="possibleAliphatic" class="ui-corner-all"></td></tr>
+        <tr><td class="ui-widget-header ui-corner-all">Aromatic</td></tr>
+        <tr><td id="possibleAromatic" class="ui-corner-all"></td></tr>
+        <tr><td class="ui-corner-all">ChangeAtoms <button id="AtomChoice" class="AtomButton" onclick="openAtomChoice(shownAtom)"></button></td></tr>
+        <tr><td class="ui-widget-header ui-corner-all">Charge</td></tr>
+        <tr><td id="possibleCharges" class="ui-corner-all"></td></tr>
+        <tr><td id="possibleChargeAdder" class="ui-corner-all"><input type="number" id="chargeAdder"/><br><button id="chargeAdderAdd" onclick="addCharge()">Add</button><button id="chargeAdderDelete" onclick="deleteCharge()">Delete</button></td></tr>
+        <tr><td class="ui-widget-header ui-corner-all">Valence</td></tr>
+        <tr><td id="possibleValences" class="ui-corner-all"></td></tr>
+        <tr><td id="possibleValenceAdder" class="ui-corner-all"><input type="number" id="valenceAdder" min="1"/><br><button id="valenceAdderAdd" onclick="addValence()">Add</button><button id="valenceAdderDelete" onclick="deleteValence()">Delete</button></td></tr>
+    </table>
+</div>
+<div id="bondInfoDiv">
+	<table id="bondInfoTable">
+    	<tr><td class="ui-widget-header ui-corner-all">Possible Types</td></tr>
+    	<tr><td>
+    		<form action="">
+				<input type="checkbox" id="singleBond" value="singleBond" onchange="Bond.checkboxHandler(this)">Single<br>
+				<input type="checkbox" id="doubleBond" value="doubleBond" onchange="Bond.checkboxHandler(this)">Double<br>
+				<input type="checkbox" id="tripleBond" value="tripleBond" onchange="Bond.checkboxHandler(this)">Triple<br>
+				<input type="checkbox" id="aromaticBond" value="aromaticBond" onchange="Bond.checkboxHandler(this)">Aromatic<br>
+			</form>
+		</td></tr>
+    </table>
+</div>
+<div id="output" >
+    <div id="serializeButtons">
+	<button onclick="Serializer.serialize()">Serialize</button>
+        <button onclick="query()">Query</button>
+    </div>
+    <div id="serialization" class="ui-corner-all"></div>
+</div>
+	
+</div>
+
+</body>
+</html>

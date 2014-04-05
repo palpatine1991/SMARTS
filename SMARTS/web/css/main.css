@@ -1,0 +1,153 @@
+@charset "utf-8";
+
+body{
+    background-color: #999;
+}
+
+.AtomButton{
+	width: 30px;
+	height: 30px;
+	margin: 1px;
+	margin-left: 6px;
+}
+
+label{
+    width: 30px;
+    height: 30px;
+    margin: 1px;
+    margin-left: 5px;
+    text-align: center;
+}
+
+label span{
+    font-size: 0.8em;    
+}
+
+#AtomChoice{
+    background-image:url(../images/tabulka.jpg);
+}
+
+table{
+	border: 1px solid black;
+        background-color: #eeeeee;
+}
+
+td{
+        border: 1px solid black;
+	font-weight: normal;
+	text-align:center;
+	width: 130px;
+	max-width: 130px;
+	height: 20px;
+}
+
+.nameCell{
+	background-color:#8B77FF;
+}
+
+#chargeAdder{
+	width: 80px;
+}
+
+#valenceAdder{
+	width: 80px;
+}
+
+#toolDiv{
+	width : 800px;
+	height: 42px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -350px;
+	margin-left: -400px;	
+}
+
+#atomInfoDiv{
+	position: fixed;
+  	top: 50%;
+  	left: 50%;
+	margin-top: -300px;
+	margin-left: 490px;
+	visibility: hidden;
+}
+
+#bondInfoDiv{
+	position: fixed;
+  	top: 50%;
+  	left: 50%;
+	margin-top: -300px;
+	margin-left: 490px;
+	visibility: hidden;
+}
+
+canvas {
+  	position: fixed;
+  	top: 50%;
+  	left: 50%;
+  	margin-top: -300px;
+	margin-left: -400px;
+	border: 1px solid black;
+        z-index: 2;
+        background-color: #eeeeee;
+}
+
+#output{
+	width: 800px;
+	height: 30px;
+	position: fixed;
+  	top: 50%;
+  	left: 50%;
+  	margin-top: 320px;
+	margin-left: -400px;
+        
+}
+
+#serialization{
+	margin-top: -30px;
+	margin-left: 100px;
+	border: 1px solid black;
+	height: 40px;
+	width : 700px;
+	overflow: auto;
+	white-space: nowrap;
+        background-color: #eeeeee;
+        position: absolute;
+        top: 20px;
+	
+}
+
+#rightMenu{
+	width : 42px;
+	height: 600px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin-top: -300px;
+	margin-left: 415px;
+        border: none;
+		
+}
+#main{
+    width : 890px;
+    height: 680px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -310px;
+    margin-left: -415px;
+    z-index: 1;
+}
+#atom-bondSpace{
+	height:30px;
+}
+
+#serializeButtons{
+    max-width: 100px;
+    position : absolute;
+    top: -10px;
+}
+#possibleAliphatic, #possibleAromatic{
+    text-overflow:ellipsis;
+    overflow: hidden;
+}

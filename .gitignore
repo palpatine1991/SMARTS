@@ -1,0 +1,17 @@
+cdk-src+libs-1.4.18
+build
+/IndexBuilding/dist
+/IndexBuilding/nbproject
+/IndexBuilding/*.xml
+/IndexBuilding/*.mf
+/SDFtoSMILES/*.xml
+/SDFtoSMILES/*.mf
+/SDFtoSMILES/dist
+/SDFtoSMILES/nbproject
+/SDFtoSMILES/build
+/SMARTS/dist
+/SMARTS/nbproject
+/SMARTS/build
+/SMARTS/db
+/SMARTS/build.xml
+/SDFtoSer
