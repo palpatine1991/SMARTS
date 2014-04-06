@@ -23,16 +23,20 @@ var createjs = window;
 <canvas id="canvas" class="ui-corner-all" width="800px" height="600px"></canvas>
 
 <div id="rightMenu" class="ui-widget-header ui-corner-all">
+    <div id="atomDiv">
     <button id="AtomChoice" class="AtomButton" onmousedown="openAtomChoice(null)"></button>
     <input type="checkbox" id="C" class="AtomButton" /> <label onmousedown='changeAtomType("C")' for="C">C</label>
     <input type="checkbox" id="N" class="AtomButton" /><label onmousedown='changeAtomType("N")' for="N">N</label>
-    <input type="checkbox" id="F" class="AtomButton" /><label onmousedown='changeAtomType("F")' for="F">F</label>
+    <input type="checkbox" id="O" class="AtomButton" /><label onmousedown='changeAtomType("O")' for="O">O</label>
     <input type="checkbox"id="benzen" class="AtomButton" /><label onmousedown='changeAction("benzen")' for="benzen">b</label>
+    </div>
     <div id="atom-bondSpace"></div>
-    <input type="checkbox" id="singleBondButton" class="AtomButton" /><label onmousedown='changeBondType("singleBond")' for="singleBondButton">-</label>
-    <input type="checkbox" id="doubleBondButton" class="AtomButton" /><label onmousedown='changeBondType("doubleBond")' for="doubleBondButton">=</label>
-    <input type="checkbox" id="tripleBondButton" class="AtomButton" /><label onmousedown='changeBondType("tripleBond")' for="tripleBondButton">≡</label>
-    <input type="checkbox" id="aromaticBondButton" class="AtomButton" /><label onmousedown='changeBondType("aromaticBond")' for="aromaticBondButton">~</label>
+    <div id="bondDiv">
+    <input type="checkbox" id="singleBondButton" class="AtomButton" /><label onmousedown='changeBondType("singleBond")' for="singleBondButton"></label>
+    <input type="checkbox" id="doubleBondButton" class="AtomButton" /><label onmousedown='changeBondType("doubleBond")' for="doubleBondButton"></label>
+    <input type="checkbox" id="tripleBondButton" class="AtomButton" /><label onmousedown='changeBondType("tripleBond")' for="tripleBondButton"></label>
+    <input type="checkbox" id="aromaticBondButton" class="AtomButton" /><label onmousedown='changeBondType("aromaticBond")' for="aromaticBondButton"></label>
+    </div>
 </div>
 <div id="atomInfoDiv">
     <table id="atomInfoTable" class="ui-corner-all">

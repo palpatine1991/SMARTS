@@ -55,9 +55,14 @@ public class smarts extends HttpServlet {
     
     public void init(ServletConfig config){
         try {
+            System.out.println("Free Memory before init: " + Runtime.getRuntime().freeMemory() + " ; Total Memory before init: " + Runtime.getRuntime().totalMemory());
+
+
             getFiltersToMemory();
             getIndexInfoToMemory();
             getDatabaseToMemory();
+            
+            System.out.println("Free Memory after init: " + Runtime.getRuntime().freeMemory() + " ; Total Memory after init: " + Runtime.getRuntime().totalMemory());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(smarts.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {

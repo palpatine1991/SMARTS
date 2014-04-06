@@ -11,7 +11,11 @@ var shownAtom;
 var json;
 
  $(function() {
-     $(".AtomButton").button().find('span').width(200);;
+     $(".AtomButton").button();
+     $("#singleBondButton").button("option", "icons", { primary: "ui-icon-singleBond" });
+     $("#doubleBondButton").button("option", "icons", { primary: "ui-icon-doubleBond" });
+     $("#tripleBondButton").button("option", "icons", { primary: "ui-icon-tripleBond" });
+     $("#aromaticBondButton").button("option", "icons", { primary: "ui-icon-aromaticBond" });
  });
 
 function init(){

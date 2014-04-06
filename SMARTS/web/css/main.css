@@ -151,3 +151,36 @@ canvas {
     text-overflow:ellipsis;
     overflow: hidden;
 }
+
+#singleBondButton{
+    background-image: url(../images/single.png);
+}
+
+#rightMenu .ui-icon{
+    background-image: url(../images/mySprite.png);
+}
+
+.ui-icon-singleBond{
+    background-position: -6px -7px;
+}
+
+.ui-icon-doubleBond{
+    background-position: -36px -7px;
+}
+
+.ui-icon-tripleBond{
+    background-position: -66px -7px;
+}
+
+.ui-icon-aromaticBond{
+    background-position: -96px -7px;
+}
+
+#bondDiv .ui-button-icon-primary{
+    left : 7px;
+}
+
+#atomDiv .ui-button-text{
+    left : 7px;
+    padding: 7px 7px;
+}
