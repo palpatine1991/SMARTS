@@ -41,8 +41,8 @@ public class SMARTSGraph {
     private void addAtomifSMILES(Set<String> result, Set<String> usedAtoms, SMARTSGraphAtom atom){
         int atomicNumber = 0;
         Set<Integer> tmp = new HashSet<Integer>();
-        tmp.addAll(atom.posibleAliphaticNumbers);
-        tmp.addAll(atom.posibleAromaticNumbers);
+        tmp.addAll(atom.possibleAliphaticNumbers);
+        tmp.addAll(atom.possibleAromaticNumbers);
         if(tmp.size() == 1){
             for(int i : tmp){
                 atomicNumber = i;
@@ -62,8 +62,8 @@ public class SMARTSGraph {
         int atomicNumber2 = 0;
         //find if first atom got only 1 atomicNumber
         Set<Integer> tmp = new HashSet<Integer>();
-        tmp.addAll(bond.firstAtom.posibleAliphaticNumbers);
-        tmp.addAll(bond.firstAtom.posibleAromaticNumbers);
+        tmp.addAll(bond.firstAtom.possibleAliphaticNumbers);
+        tmp.addAll(bond.firstAtom.possibleAromaticNumbers);
         if(tmp.size() == 1){
             for(int i : tmp){
                 atomicNumber1 = i;
@@ -71,8 +71,8 @@ public class SMARTSGraph {
         }     
         //find if second atom got only 1 atomicNumber
         tmp.clear();
-        tmp.addAll(bond.secondAtom.posibleAliphaticNumbers);
-        tmp.addAll(bond.secondAtom.posibleAromaticNumbers);
+        tmp.addAll(bond.secondAtom.possibleAliphaticNumbers);
+        tmp.addAll(bond.secondAtom.possibleAromaticNumbers);
         if(tmp.size() == 1){
             for(int i : tmp){
                 atomicNumber2 = i;

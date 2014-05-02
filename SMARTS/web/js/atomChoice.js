@@ -80,7 +80,7 @@ function turnUnmarked(dom){
 
 function selectAtomType(dom){
 	if(activeType == "aliphatic"){
-		if(dom.style.borderColor == "rgb(255, 0, 0)"){  //if button is selected
+		if(dom.style.borderColor == "rgb(253, 60, 67)"){  //if button is selected
 			turnUnmarked(dom);
 		}
 		else{ //button is not selected
@@ -88,7 +88,7 @@ function selectAtomType(dom){
 		}
 	}
 	else if(activeType == "aromatic"){
-		if(dom.style.borderColor == "rgb(0, 255, 255)"){  //if button is selected
+		if(dom.style.borderColor == "rgb(0, 204, 204)"){  //if button is selected
 			turnUnmarked(dom);
 		}
 		else{ //button is not selected

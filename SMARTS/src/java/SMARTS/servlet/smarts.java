@@ -7,6 +7,7 @@ package SMARTS.servlet;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -55,14 +56,9 @@ public class smarts extends HttpServlet {
     
     public void init(ServletConfig config){
         try {
-            System.out.println("Free Memory before init: " + Runtime.getRuntime().freeMemory() + " ; Total Memory before init: " + Runtime.getRuntime().totalMemory());
-
-
             getFiltersToMemory();
             getIndexInfoToMemory();
             getDatabaseToMemory();
-            
-            System.out.println("Free Memory after init: " + Runtime.getRuntime().freeMemory() + " ; Total Memory after init: " + Runtime.getRuntime().totalMemory());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(smarts.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -87,7 +83,7 @@ public class smarts extends HttpServlet {
             throws ServletException, IOException {
         System.out.println("START");
         PrintWriter out = response.getWriter();
-        long startTime = System.currentTimeMillis();
+        
         HttpSession session = request.getSession();   
         
         boolean filtered = false;
@@ -162,15 +158,19 @@ public class smarts extends HttpServlet {
         
         dbRecord record;
         boolean match;
+        System.out.println("filterSize: " + filter.size());
+        long startTime = System.currentTimeMillis(); 
+        SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
+        IAtomContainer mol;
         for(int j = i; j < numberOfRecords; j++){
-
+            //Prepsat for cyklus na foreach pres filter
             i++;
-            System.out.println(i);
             record = db.get(j);
             progress.progress = i;
             if((!filtered) || (valid < filter.size() && filter.contains(i))){
                 try{
-                    match = querytool.matches(record.mol);
+                    mol = sp.parseSmiles(record.smiles);
+                    match = querytool.matches(mol);
 
                     if(match){
                         valid++;
@@ -203,16 +203,28 @@ public class smarts extends HttpServlet {
         String path = PATH + "small_index/";
         
         for(int i = 1; i <= 109; i++){
-            filters.put(Integer.toString(i), Files.readAllBytes(Paths.get(path + i + ".index")));
+            addFilter(Integer.toString(i), path);
         }
         for(int i = 1; i <= 109; i++){
             for(int j = i; j <= 109; j++){     
                 System.out.println("reading filters: " + i + " , " + j);
-                filters.put(i + "-" + j, Files.readAllBytes(Paths.get(path + i + "-" + j + ".index")));
-                filters.put(i + "=" + j, Files.readAllBytes(Paths.get(path + i + "=" + j + ".index")));
-                filters.put(i + "#" + j, Files.readAllBytes(Paths.get(path + i + "#" + j + ".index")));
-                filters.put(i + "~" + j, Files.readAllBytes(Paths.get(path + i + "~" + j + ".index")));
+                addFilter(i + "-" + j, path);
+                addFilter(i + "=" + j, path);
+                addFilter(i + "#" + j, path);
+                addFilter(i + "~" + j, path);
             }
+        }
+    }
+    
+    private void addFilter(String fileName, String path) throws IOException{
+        File f = new File(path + fileName + ".index");
+        if(f.exists() && !f.isDirectory()) {
+            filters.put(fileName, Files.readAllBytes(Paths.get(path + fileName + ".index")));
+        }
+        else{
+            byte[] tmp = new byte[1];
+            tmp[0] = 0;
+            filters.put(fileName, tmp);
         }
     }
     
@@ -223,7 +235,6 @@ public class smarts extends HttpServlet {
     }
     
     private void getDatabaseToMemory() throws FileNotFoundException, IOException, InvalidSmilesException{
-        SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
         BufferedReader br = new BufferedReader(new FileReader(PATH + "chembl_full1.sml"));
         String line = br.readLine();
         String[] splitLine;
@@ -232,8 +243,8 @@ public class smarts extends HttpServlet {
         
         while(line != null){
             splitLine = line.split(";");
-            mol = sp.parseSmiles(splitLine[0]);
-            db.add(new dbRecord(splitLine[1], splitLine[0] ,mol));
+           
+            db.add(new dbRecord(splitLine[1], splitLine[0]));
             i++;
             System.out.println(i);
             line = br.readLine();
@@ -243,6 +254,12 @@ public class smarts extends HttpServlet {
     private SMARTSGraph getSmartsGraph(String json) throws FileNotFoundException, UnsupportedEncodingException{
 
         SMARTSGraph graph = new Gson().fromJson(json, SMARTSGraph.class);
+        
+        for(String key : graph.atoms.keySet()){
+            SMARTSGraphAtom atom = graph.atoms.get(key);
+            atom.bonds = new ArrayList<SMARTSGraphBond>();
+            graph.atoms.put(key, atom);
+        }
         
         for(SMARTSGraphBond bond : graph.bonds){
             bond.firstAtom = graph.atoms.get(bond.firstAtomId);
@@ -273,11 +290,10 @@ public class smarts extends HttpServlet {
         return graph;
     }
     
-    //gets unempty set
     private List<Integer> getFilter(Set<String> set) throws IOException{
         List<Integer> result = new ArrayList<Integer>();
         
-        if(set.size() == 0){
+        if(set.isEmpty()){
             return result;
         }
         
@@ -305,6 +321,13 @@ public class smarts extends HttpServlet {
     }
     
     private byte[] doAnd(byte[] arr1, byte[] arr2){
+        if(arr1.length == 1){
+            return arr1;
+        }
+        if(arr2.length == 1){
+            return arr2;
+        }
+        
         for(int i = 0; i < arr1.length; i++){
             arr1[i] = (byte)(arr1[i] & arr2[i]);
         }
@@ -314,12 +337,10 @@ public class smarts extends HttpServlet {
 
 class dbRecord{
     String id;
-    IAtomContainer mol;
     String smiles;
     
-    public dbRecord(String id, String smiles, IAtomContainer mol){
+    public dbRecord(String id, String smiles){
         this.id = id;
         this.smiles = smiles;
-        this.mol = mol;
     }
 }

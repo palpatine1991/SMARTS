@@ -176,6 +176,10 @@ canvas {
     background-position: -96px -7px;
 }
 
+.ui-icon-benzen{
+    background-position: -126px -7px;
+}
+
 #bondDiv .ui-button-icon-primary{
     left : 7px;
 }

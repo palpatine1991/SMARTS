@@ -27,12 +27,17 @@ Serializer.getJson = function(){
     var obj = {atoms : {}, bonds : []};
     
     $.each(atomContainer.children, function(index, value){
-        obj.atoms[index.toString()] = {posibleAromaticNumbers : [], posibleAliphaticNumbers : [], bonds : []};
+        obj.atoms[index.toString()] = {
+            possibleAromaticNumbers : [],
+            possibleAliphaticNumbers : [],
+            possibleCharges : value.possibleCharges,
+            possibleValences : value.possibleValences
+        };
         $.each(value.possibleAromatic, function(i,v){
-            obj.atoms[index.toString()].posibleAromaticNumbers.push(parseInt(Serializer.convertToNumber(v).substring(1)));
+            obj.atoms[index.toString()].possibleAromaticNumbers.push(parseInt(Serializer.convertToNumber(v).substring(1)));
         });
         $.each(value.possibleAliphatic, function(i,v){
-            obj.atoms[index.toString()].posibleAliphaticNumbers.push(parseInt(Serializer.convertToNumber(v).substring(1)));
+            obj.atoms[index.toString()].possibleAliphaticNumbers.push(parseInt(Serializer.convertToNumber(v).substring(1)));
         });
     });
     
@@ -133,7 +138,7 @@ Serializer.dfs = function(atom,bond){
 	}
 	
 	for(var i=0; i < atom.possibleValences.length; i++){
-		atomString+= "D";
+		atomString+= "v";
 		atomString += atom.possibleValences[i];
 		
 		if(i < atom.possibleValences.length - 1){

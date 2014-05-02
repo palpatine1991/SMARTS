@@ -25,38 +25,4 @@ public class SMARTSGraphBond {
     boolean tripleBond = false;
     boolean aromaticBond = false;
     int typeCount = 0;
-    
-    public SMARTSGraphBond(SMARTSGraphAtom a1, SMARTSGraphAtom a2, IBond bond){
-        /*firstAtom = a1;
-        secondAtom = a2;
-        recursiveBondParse(bond);*/
-    }
-    
-    private void recursiveBondParse(IBond bond){
-        if(bond instanceof LogicalOperatorBond){
-            IQueryBond left = ((LogicalOperatorBond)bond).getLeft();
-            IQueryBond right = ((LogicalOperatorBond)bond).getRight(); 
-            recursiveBondParse((IBond)left);
-            recursiveBondParse((IBond)right);
-        }
-        else if(bond instanceof AromaticQueryBond){
-            aromaticBond = true;
-            typeCount++;
-        }
-        else if(bond instanceof OrderQueryBond){
-            IBond.Order order = bond.getOrder();
-            if(order == IBond.Order.SINGLE){
-                singleBond = true;
-                typeCount++;
-            }
-            if(order == IBond.Order.DOUBLE){
-                doubleBond = true;
-                typeCount++;
-            }
-            if(order == IBond.Order.TRIPLE){
-                tripleBond = true;
-                typeCount++;
-            }
-        }
-    }
 }

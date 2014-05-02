@@ -16,6 +16,7 @@ var json;
      $("#doubleBondButton").button("option", "icons", { primary: "ui-icon-doubleBond" });
      $("#tripleBondButton").button("option", "icons", { primary: "ui-icon-tripleBond" });
      $("#aromaticBondButton").button("option", "icons", { primary: "ui-icon-aromaticBond" });
+     $("#benzen").button("option", "icons", { primary: "ui-icon-benzen" });
  });
 
 function init(){
