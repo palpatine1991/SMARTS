@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
-import org.openscience.cdk.CDKConstants;
 import org.openscience.cdk.DefaultChemObjectBuilder;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.exception.InvalidSmilesException;
@@ -33,8 +32,8 @@ public class IndexBuilder {
     BufferedReader br;
     
     public static final String path = "../SMARTS/db/";
-    public static final String file = "chembl_full1.sml";
-    public static final String index = "small_index";
+    public static final String file = "chembl_full.sml";
+    public static final String index = "index";
             
     PrintWriter info = new PrintWriter(path + index + "/info.index", "UTF-8");
         
@@ -54,7 +53,6 @@ public class IndexBuilder {
         int[][] results = new int[109][11];
         int[][] matches = new int[109][11];
         boolean[][] notEmpty = new boolean[109][11];
-        int numberOfRecords = 0;
         for(int i = 0; i < 109; i++){
             for(int j = 0; j < 11; j++){
                 outs[i][j] =  new FileOutputStream(path + index + "/" + (i + 1) + ";v" + j + ".index");
@@ -74,7 +72,6 @@ public class IndexBuilder {
         int number = 0;
         SMARTSQueryTool querytool = new SMARTSQueryTool("c", DefaultChemObjectBuilder.getInstance());
         while(line != null){
-            numberOfRecords++;
             number++;
             bit++;
             splitLine = line.split(";");
@@ -138,11 +135,9 @@ public class IndexBuilder {
                 }
              }
          }
-         
-         info.println("numberOfRecords;" + numberOfRecords);
          for(int i = 1; i <= 109; i++){
              for(int j = 0; j < 11; j++){ 
-                info.println(i + j + ";" + matches[i - 1][j]);
+                info.println(i + ";v" + j + ";;" + matches[i - 1][j]);
                 outs[i - 1][j].close();
              }
          }
@@ -165,7 +160,6 @@ public class IndexBuilder {
         int[][] results = new int[109][21];
         int[][] matches = new int[109][21];
         boolean[][] notEmpty = new boolean[109][21];
-        int numberOfRecords = 0;
         for(int i = 0; i < 109; i++){
             for(int j = 0; j < 21; j++){
                 if(j < 10){
@@ -190,7 +184,6 @@ public class IndexBuilder {
         int number = 0;
         SMARTSQueryTool querytool = new SMARTSQueryTool("c", DefaultChemObjectBuilder.getInstance());
         while(line != null){
-            numberOfRecords++;
             number++;
             bit++;
             splitLine = line.split(";");
@@ -258,11 +251,15 @@ public class IndexBuilder {
                 }
              }
          }
-         
-         info.println("numberOfRecords;" + numberOfRecords);
+    
          for(int i = 1; i <= 109; i++){
              for(int j = 0; j < 21; j++){ 
-                info.println(i + j + ";" + matches[i - 1][j]);
+                String fileName = i + ";";
+                if(j >= 10){
+                    fileName += "+";
+                }
+                fileName += (j - 10);
+                info.println(fileName + ";;" + matches[i - 1][j]);
                 outs[i - 1][j].close();
              }
          }
@@ -417,10 +414,10 @@ public class IndexBuilder {
          }
          for(String key : numOfMatches.keySet()){
              if(numOfMatches.get(key) == 0){
-                 File file = new File(path + index + "/" + key + ".index");
-                 file.delete();
+                 File f = new File(path + index + "/" + key + ".index");
+                 f.delete();
              }
-             info.println(key + ";" + numOfMatches.get(key));
+             info.println(key + ";;" + numOfMatches.get(key));
          }
          br.close();
          System.out.println("Parsing: " + parsing + " Checking: " + checking + " Writing: " + writing);
@@ -537,9 +534,9 @@ public class IndexBuilder {
              }
          }
          
-         info.println("numberOfRecords;" + numberOfRecords);
+         info.println("numberOfRecords;;" + numberOfRecords);
          for(int i = 1; i <= 109; i++){
-             info.println(i + ";" + matches[i - 1]);
+             info.println(i + ";;" + matches[i - 1]);
              outs[i - 1].close();
          }
          for(int i = 1; i <= 109; i++){

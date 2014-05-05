@@ -52,12 +52,15 @@ public class smarts extends HttpServlet {
     String PATH = "C:/bakalarka/server/SMARTS/db/";
     List<dbRecord> db = new ArrayList<dbRecord>();;
     Map<String,byte[]> filters = new HashMap<String,byte[]>();
+    Map<String,List<Integer>> smallFilters = new HashMap<String,List<Integer>>();
+    Map<String, Integer> filterStats = new HashMap<String, Integer>();
     int numberOfRecords;
+    int listLimit;
     
     public void init(ServletConfig config){
         try {
-            getFiltersToMemory();
             getIndexInfoToMemory();
+            getFiltersToMemory(); 
             getDatabaseToMemory();
         } catch (FileNotFoundException ex) {
             Logger.getLogger(smarts.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,14 +89,13 @@ public class smarts extends HttpServlet {
         
         HttpSession session = request.getSession();   
         
-        boolean filtered = false;
-        List<Integer> filter = null;
         int valid = 0;
         ProgressObject progress = null;
         int i = 0;
         int oldValid = 0;
+        byte[] filterByte;
+        List<Integer> filter;
         
-        int actualProgress = 0;
         int numOfRecords = Integer.parseInt(request.getParameter("numOfRecords"));
         String s = request.getParameter("smarts");
         String json = request.getParameter("json");
@@ -117,24 +119,14 @@ public class smarts extends HttpServlet {
             session.setAttribute("timeStamp", timeStamp);
 
             SMARTSGraph graph = getSmartsGraph(json);
-            Set<String> filterSet = graph.getIndexFileNames();
-            filtered = false;
-            if(filterSet.size() > 0){
-                filtered = true;
-            }
+            filterByte = graph.getFilter();
             
-            session.setAttribute("filtered", filtered);
-
-
+            filter = byteToList(filterByte);
+            
             progress = new ProgressObject(numberOfRecords);
 
             session.setAttribute("progress", progress);
 
-            filter = null;
-
-            if(filtered){
-                filter = getFilter(filterSet);
-            }
             session.setAttribute("filter", filter);
 
             i = 0;
@@ -144,10 +136,7 @@ public class smarts extends HttpServlet {
         }
         else{
             System.out.println("TimeStamp not null");
-            filtered = Boolean.parseBoolean(session.getAttribute("filtered").toString());
-            if(filtered){
-                filter = (List<Integer>)session.getAttribute("filter");
-            }
+            filter = (List<Integer>)session.getAttribute("filter");
             valid = Integer.parseInt(session.getAttribute("valid").toString());
             oldValid = valid;
             progress = (ProgressObject)session.getAttribute("progress");
@@ -167,7 +156,7 @@ public class smarts extends HttpServlet {
             i++;
             record = db.get(j);
             progress.progress = i;
-            if((!filtered) || (valid < filter.size() && filter.contains(i))){
+            if(valid < filter.size() && filter.contains(i)){
                 try{
                     mol = sp.parseSmiles(record.smiles);
                     match = querytool.matches(mol);
@@ -200,7 +189,7 @@ public class smarts extends HttpServlet {
     }
     
     private void getFiltersToMemory() throws IOException{
-        String path = PATH + "small_index/";
+        String path = PATH + "index/";
         
         for(int i = 1; i <= 109; i++){
             addFilter(Integer.toString(i), path);
@@ -213,29 +202,53 @@ public class smarts extends HttpServlet {
                 addFilter(i + "#" + j, path);
                 addFilter(i + "~" + j, path);
             }
+            for(int j = 0; j <= 10; j++){
+                addFilter(i + ";v" + j,path);
+            }
+            for(int j = -10; j <= 10; j++){
+                if(j >=0){
+                    addFilter(i + ";+" + j,path);
+                }
+                else{
+                    addFilter(i + ";" + j,path);
+                }
+            }
         }
     }
     
     private void addFilter(String fileName, String path) throws IOException{
         File f = new File(path + fileName + ".index");
-        if(f.exists() && !f.isDirectory()) {
+        
+        if(f.exists() && !f.isDirectory() && filterStats.get(fileName) >= listLimit) {
             filters.put(fileName, Files.readAllBytes(Paths.get(path + fileName + ".index")));
         }
+        else if(f.exists() && !f.isDirectory()){
+            byte[] tmpArray = Files.readAllBytes(Paths.get(path + fileName + ".index"));
+            smallFilters.put(fileName, byteToList(tmpArray));
+        }
         else{
-            byte[] tmp = new byte[1];
-            tmp[0] = 0;
-            filters.put(fileName, tmp);
+            List<Integer> tmp = new ArrayList<Integer>();
+            smallFilters.put(fileName, tmp);
         }
     }
     
     private void getIndexInfoToMemory() throws FileNotFoundException, IOException{
-        BufferedReader indexInfo = new BufferedReader(new FileReader(PATH + "small_index/info.index"));
+        BufferedReader indexInfo = new BufferedReader(new FileReader(PATH + "index/info.index"));
         String firstLine = indexInfo.readLine();
-        numberOfRecords = Integer.parseInt(firstLine.split(";")[1]);
+        numberOfRecords = Integer.parseInt(firstLine.split(";;")[1]);
+        listLimit = numberOfRecords / 32;
+        String[] splitLine;
+        
+        String line = indexInfo.readLine();
+        while(line != null){
+            splitLine = line.split(";;");
+            filterStats.put(splitLine[0], Integer.parseInt(splitLine[1]));
+            line = indexInfo.readLine();
+        }
     }
     
     private void getDatabaseToMemory() throws FileNotFoundException, IOException, InvalidSmilesException{
-        BufferedReader br = new BufferedReader(new FileReader(PATH + "chembl_full1.sml"));
+        BufferedReader br = new BufferedReader(new FileReader(PATH + "chembl_full.sml"));
         String line = br.readLine();
         String[] splitLine;
         IAtomContainer mol;
@@ -254,6 +267,12 @@ public class smarts extends HttpServlet {
     private SMARTSGraph getSmartsGraph(String json) throws FileNotFoundException, UnsupportedEncodingException{
 
         SMARTSGraph graph = new Gson().fromJson(json, SMARTSGraph.class);
+        
+        graph.filters = filters;
+        graph.smallFilters = smallFilters;
+        graph.filterStats = filterStats;
+        graph.numberOfRecords = numberOfRecords;
+        graph.listLimit = listLimit;
         
         for(String key : graph.atoms.keySet()){
             SMARTSGraphAtom atom = graph.atoms.get(key);
@@ -290,48 +309,21 @@ public class smarts extends HttpServlet {
         return graph;
     }
     
-    private List<Integer> getFilter(Set<String> set) throws IOException{
+    private List<Integer> byteToList(byte[] filter) throws IOException{
         List<Integer> result = new ArrayList<Integer>();
         
-        if(set.isEmpty()){
-            return result;
-        }
-        
-        byte[] actualBitstring = null;
-        boolean firstRecord = true;
-        
-        for(String fileName : set){
-            if(firstRecord){
-                actualBitstring = filters.get(fileName);//Files.readAllBytes(Paths.get(PATH + "small_index/" + fileName + ".index"));
-                firstRecord = false;
+        for(int i = 0; i < filter.length; i++){
+            if(filter[i] == 0){
+                continue;
             }
-            else{
-                actualBitstring = doAnd(actualBitstring, filters.get(fileName)/*Files.readAllBytes(Paths.get(PATH + "small_index/" + fileName + ".index"))*/);
-            }        
-        }
-        for(int i = 0; i < actualBitstring.length; i++){
             for(int j = 7; j >=0; j--){
-                if((actualBitstring[i] >> j) % 2 != 0){
+                if((filter[i] >> j) % 2 != 0){
                     result.add((i * 8) + (8 - j));
                 }
             }
         }
         
         return result;
-    }
-    
-    private byte[] doAnd(byte[] arr1, byte[] arr2){
-        if(arr1.length == 1){
-            return arr1;
-        }
-        if(arr2.length == 1){
-            return arr2;
-        }
-        
-        for(int i = 0; i < arr1.length; i++){
-            arr1[i] = (byte)(arr1[i] & arr2[i]);
-        }
-        return arr1;
     }
 }
 
