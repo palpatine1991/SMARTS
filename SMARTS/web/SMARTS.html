@@ -19,7 +19,8 @@ var createjs = window;
 
 </head>
 <body onload="init()">
-<div id="main" class="ui-widget-header ui-corner-all">
+<div id="main">
+<div id="editor" class="ui-widget-header ui-corner-all">
 <canvas id="canvas" class="ui-corner-all" width="800px" height="600px"></canvas>
 
 <div id="rightMenu" class="ui-widget-header ui-corner-all">
@@ -38,6 +39,15 @@ var createjs = window;
     <input type="checkbox" id="aromaticBondButton" class="AtomButton" /><label onmousedown='changeBondType("aromaticBond")' for="aromaticBondButton"></label>
     </div>
 </div>
+<div id="output" >
+    <div id="serializeButtons">
+	<button onclick="Serializer.serialize()">Serialize</button>
+        <button onclick="query()">Query</button>
+    </div>
+    <div id="serialization" class="ui-corner-all"></div>
+</div>
+</div>
+<div id="properties">
 <div id="atomInfoDiv">
     <table id="atomInfoTable" class="ui-corner-all">
     	<tr><td class="ui-widget-header ui-corner-all">Aliphatic</td></tr>
@@ -66,12 +76,6 @@ var createjs = window;
 		</td></tr>
     </table>
 </div>
-<div id="output" >
-    <div id="serializeButtons">
-	<button onclick="Serializer.serialize()">Serialize</button>
-        <button onclick="query()">Query</button>
-    </div>
-    <div id="serialization" class="ui-corner-all"></div>
 </div>
 	
 </div>

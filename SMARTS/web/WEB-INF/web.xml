@@ -4,6 +4,11 @@
         <servlet-name>smarts</servlet-name>
         <servlet-class>SMARTS.servlet.smarts</servlet-class>
         <load-on-startup>0</load-on-startup>
+        
+        <init-param>
+                <param-name>dbPath</param-name>
+                <param-value>C:/bakalarka/server/SMARTS/db/</param-value>
+        </init-param>
     </servlet>
     <servlet-mapping>
         <servlet-name>smarts</servlet-name>

@@ -53,99 +53,89 @@ td{
 	width: 80px;
 }
 
-#toolDiv{
-	width : 800px;
-	height: 42px;
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	margin-top: -350px;
-	margin-left: -400px;	
-}
-
 #atomInfoDiv{
-	position: fixed;
-  	top: 50%;
-  	left: 50%;
-	margin-top: -300px;
-	margin-left: 490px;
-	visibility: hidden;
+    display: none;
 }
 
 #bondInfoDiv{
-	position: fixed;
-  	top: 50%;
-  	left: 50%;
-	margin-top: -300px;
-	margin-left: 490px;
-	visibility: hidden;
+    display: none;
 }
 
-canvas {
-  	position: fixed;
-  	top: 50%;
-  	left: 50%;
-  	margin-top: -300px;
-	margin-left: -400px;
-	border: 1px solid black;
-        z-index: 2;
-        background-color: #eeeeee;
+#canvas {
+    float : left;
+    margin-top: 10px;
+    margin-left: 10px;
+    border: 1px solid black;
+    z-index: 2;
+    background-color: #eeeeee;
 }
 
 #output{
-	width: 800px;
-	height: 30px;
-	position: fixed;
-  	top: 50%;
-  	left: 50%;
-  	margin-top: 320px;
-	margin-left: -400px;
+    width: 800px;
+    height: 30px;
+    float : left;
+    bottom : 20px;
+    left: 10px;
         
 }
 
+#properties{
+    margin-left: 10px;
+    float : left;
+}
+
 #serialization{
-	margin-top: -30px;
-	margin-left: 100px;
-	border: 1px solid black;
-	height: 40px;
-	width : 700px;
-	overflow: auto;
-	white-space: nowrap;
-        background-color: #eeeeee;
-        position: absolute;
-        top: 20px;
+    margin-top: -50px;
+    margin-left: 100px;
+    border: 1px solid black;
+    height: 40px;
+    width : 700px;
+    overflow: auto;
+    white-space: nowrap;
+    background-color: #eeeeee;
+    top: 20px;
 	
 }
 
 #rightMenu{
-	width : 42px;
-	height: 600px;
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	margin-top: -300px;
-	margin-left: 415px;
-        border: none;
-		
+    width : 42px;
+    height: 600px;
+    right: 20px;
+    top: 10px;
+    margin-top : 10px;
+    margin-left: 10px;
+    float : left;
+    border: none;	
 }
 #main{
-    width : 890px;
+    width : 1030px;
+    min-width: 1030px;
     height: 680px;
-    position: fixed;
+    min-height: 680px;
+    margin: 0 auto;
+    margin-top: 20px;
+    /*position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -310px;
-    margin-left: -415px;
+    margin-top: -300px;
+    margin-left: -415px;*/
     z-index: 1;
 }
+
+#editor{
+    float : left;
+    width : 870px;
+    height : 680px;
+}
+
 #atom-bondSpace{
 	height:30px;
 }
 
 #serializeButtons{
     max-width: 100px;
-    position : absolute;
-    top: -10px;
+    margin-top: 10px;
+    margin-left: 10px; 
 }
 #possibleAliphatic, #possibleAromatic{
     text-overflow:ellipsis;

@@ -10,25 +10,19 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintWriter;
 import org.openscience.cdk.*;
 import org.openscience.cdk.exception.CDKException;
 import org.openscience.cdk.interfaces.IAtomContainer;
 import org.openscience.cdk.io.iterator.IteratingSDFReader;
 import org.openscience.cdk.smiles.*;
-import org.openscience.cdk.io.random.RandomAccessSDFReader;
-import java.util.ArrayList;
-import java.util.List;
-
-import java.lang.instrument.Instrumentation;  
   
 /**
  *
  * @author Palpatine
  */
 public class SDFtoSMILES {
-    static String input = "../../SMARTS/db/chembl_full1.sdf";
-    static String output = "../../SMARTS/db/chembl_full1.sml";
+    static String input = "../../SMARTS/db/chembl_test_small.sdf";
+    static String output = "../../SMARTS/db/chembl_test_small.sml";
     
     /**
      * @param args the command line arguments
@@ -48,7 +42,7 @@ public class SDFtoSMILES {
         sg = SmilesGenerator.generic().aromatic();
         sg.setUseAromaticityFlag(true);
         
-        List<IAtomContainer> mols = new ArrayList<IAtomContainer>();
+        //List<IAtomContainer> mols = new ArrayList<IAtomContainer>();
 
         IAtomContainer mol;
         
@@ -56,12 +50,13 @@ public class SDFtoSMILES {
 
         while(reader.hasNext()){
             mol = (IAtomContainer)reader.next();
-            mols.add(mol);
+            //mols.add(mol);
             j++;
             String smiles = sg.create(mol);
             if(!smiles.equals("")){
                 writer.write(sg.create(mol).getBytes());
                 writer.write(";".getBytes());
+                writer.write("https://www.ebi.ac.uk/chembl/compound/inspect/".getBytes());
                 writer.write(((String)mol.getProperties().get("chembl_id")).getBytes());
                 writer.write("\n".getBytes());
             }
@@ -71,9 +66,9 @@ public class SDFtoSMILES {
             System.out.println("done" + j);
         }
         
-        totalMemory = MemoryUtil.deepMemoryUsageOfAll(mols, MemoryUtil.VisibilityFilter.ALL);
+        //totalMemory = MemoryUtil.deepMemoryUsageOfAll(mols, MemoryUtil.VisibilityFilter.ALL);
         
-        System.out.println("Average memory: " + (totalMemory/j));
+        //System.out.println("Average memory: " + (totalMemory/j));
         
         /*a a = new a();
         a aa = new a();

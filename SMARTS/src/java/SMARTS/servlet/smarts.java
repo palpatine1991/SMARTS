@@ -5,22 +5,14 @@
 package SMARTS.servlet;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.ObjectInputStream;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -34,23 +26,18 @@ import org.openscience.cdk.exception.InvalidSmilesException;
 import org.openscience.cdk.smiles.smarts.*;
 import org.openscience.cdk.smiles.*;
 import org.openscience.cdk.interfaces.*;
-import org.openscience.cdk.isomorphism.matchers.QueryAtomContainer;
-import org.openscience.cdk.smiles.smarts.parser.SMARTSParser;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletConfig;
-import org.openscience.cdk.ringsearch.AllRingsFinder;
-//import org.openscience.cdk.smsd.global.TimeOut;
 
 
 public class smarts extends HttpServlet {
     
-    String PATH = "C:/bakalarka/server/SMARTS/db/";
-    List<dbRecord> db = new ArrayList<dbRecord>();;
+    String PATH;;
+    List<DbRecord> db = new ArrayList<DbRecord>();;
     Map<String,byte[]> filters = new HashMap<String,byte[]>();
     Map<String,List<Integer>> smallFilters = new HashMap<String,List<Integer>>();
     Map<String, Integer> filterStats = new HashMap<String, Integer>();
@@ -58,6 +45,7 @@ public class smarts extends HttpServlet {
     int listLimit;
     
     public void init(ServletConfig config){
+        PATH = config.getInitParameter("dbPath");
         try {
             getIndexInfoToMemory();
             getFiltersToMemory(); 
@@ -117,15 +105,15 @@ public class smarts extends HttpServlet {
             long timeStamp = Long.parseLong(request.getParameter("timeStamp"));
             
             session.setAttribute("timeStamp", timeStamp);
+            
+            progress = new ProgressObject(numberOfRecords);
+
+            session.setAttribute("progress", progress);
 
             SMARTSGraph graph = getSmartsGraph(json);
             filterByte = graph.getFilter();
             
             filter = byteToList(filterByte);
-            
-            progress = new ProgressObject(numberOfRecords);
-
-            session.setAttribute("progress", progress);
 
             session.setAttribute("filter", filter);
 
@@ -145,37 +133,38 @@ public class smarts extends HttpServlet {
         }
         sb.append("[");
         
-        dbRecord record;
+        DbRecord record;
         boolean match;
         System.out.println("filterSize: " + filter.size());
         long startTime = System.currentTimeMillis(); 
         SmilesParser sp = new SmilesParser(DefaultChemObjectBuilder.getInstance());
         IAtomContainer mol;
-        for(int j = i; j < numberOfRecords; j++){
+        //for(int j = i; j < numberOfRecords; j++){
+        for(int j : filter){
             //Prepsat for cyklus na foreach pres filter
-            i++;
-            record = db.get(j);
-            progress.progress = i;
-            if(valid < filter.size() && filter.contains(i)){
-                try{
-                    mol = sp.parseSmiles(record.smiles);
-                    match = querytool.matches(mol);
+            if(j <= i){
+                continue;
+            }
+            record = db.get(j - 1);
+            progress.progress = j;
+            try{
+                mol = sp.parseSmiles(record.smiles);
+                match = querytool.matches(mol);
 
-                    if(match){
-                        valid++;
-                        session.setAttribute("valid", valid);
-                        sb.append(",{\"link\" : \"https://www.ebi.ac.uk/chembl/compound/inspect/" + record.id + "\",");
-                        sb.append("\"valid_number\" : " + valid + ",");
-                        sb.append("\"id\" : " + i + ",");
-                        sb.append("\"smiles\" : \"" + record.smiles + "\"}");
+                if(match){
+                    valid++;
+                    session.setAttribute("valid", valid);
+                    sb.append(",{\"link\" : \"").append(record.url).append("\",");
+                    sb.append("\"valid_number\" : ").append(valid).append(",");
+                    sb.append("\"id\" : ").append(j).append(",");
+                    sb.append("\"smiles\" : \"").append(sg.create(mol)).append("\"}");
+                    if(valid - oldValid == numOfRecords){
+                        break;
                     }
                 }
-                catch(CDKException ex){
-                    System.out.println("huge structure");
-                }
             }
-            if(valid - oldValid == numOfRecords){
-                break;
+            catch(CDKException ex){
+                System.out.println("huge structure");
             }
         }
         sb.append("]");
@@ -257,7 +246,7 @@ public class smarts extends HttpServlet {
         while(line != null){
             splitLine = line.split(";");
            
-            db.add(new dbRecord(splitLine[1], splitLine[0]));
+            db.add(new DbRecord(splitLine[1], splitLine[0]));
             i++;
             System.out.println(i);
             line = br.readLine();
@@ -327,12 +316,12 @@ public class smarts extends HttpServlet {
     }
 }
 
-class dbRecord{
-    String id;
+class DbRecord{
+    String url;
     String smiles;
     
-    public dbRecord(String id, String smiles){
-        this.id = id;
+    public DbRecord(String url, String smiles){
+        this.url = url;
         this.smiles = smiles;
     }
 }

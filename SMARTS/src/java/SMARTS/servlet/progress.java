@@ -35,6 +35,9 @@ public class progress extends HttpServlet {
             if(progress != null){
                 out.println("progress: " + progress.progress + " / " + progress.numberOfRecords);
             }
+            else{
+                out.println("progress: Initializing...");
+            }
             
     }
 }

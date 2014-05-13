@@ -149,7 +149,7 @@ Atom.updateShownProperties = function(){
 
 Atom.activateAtom = function(atom){
 	//aktivace atomu
-	$("#atomInfoDiv").css("visibility","visible");
+	$("#atomInfoDiv").css("display","block");
 	shownAtom = atom;
 	lastActiveAtom = atom;
 	lastActiveAtom.atom.graphics.beginStroke(Graphics.getRGB(0, 255, 0, 1));
@@ -160,7 +160,7 @@ Atom.activateAtom = function(atom){
 }
 
 Atom.deactivateAtom = function(){
-	$("#atomInfoDiv").css("visibility","hidden");
+	$("#atomInfoDiv").css("display","none");
 	lastActiveAtom.atom.graphics.beginStroke(Graphics.getRGB(0, 0, 0, 1));
 	lastActiveAtom.atom.graphics.drawEllipse(0,0,atomDiameter,atomDiameter);
 	document.getElementById("possibleAliphatic").innerHTML = [];

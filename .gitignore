@@ -15,3 +15,10 @@ build
 /SMARTS/db
 /SMARTS/build.xml
 /SDFtoSer
+/AddDBItems/nbproject/private/
+/addDBItems/nbproject/private/
+/addDBItems/dist/
+/AddNewDbItems/nbproject/private/
+/AddNewDbItems/dist/
+/IndexLibrary/nbproject/private/
+/IndexLibrary/dist/

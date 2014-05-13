@@ -167,7 +167,7 @@ Bond.activateBond = function(bond){
 	if(bond == interimBond){
 		return;
 	}
-	$("#bondInfoDiv").css("visibility","visible");
+	$("#bondInfoDiv").css("display","block");
 	Bond.shownBond = bond;
 	
 	var actline = new Shape();
@@ -188,7 +188,7 @@ Bond.activateBond = function(bond){
 }
 
 Bond.deactivateBond = function(){
-	$("#bondInfoDiv").css("visibility","hidden");
+	$("#bondInfoDiv").css("display","none");
 	Bond.shownBond.activeLine.removeAllChildren();
 	Bond.shownBond = null;
 	

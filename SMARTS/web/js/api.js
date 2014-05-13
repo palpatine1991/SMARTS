@@ -291,5 +291,5 @@ function query(){
 
     var obj = {smarts : $("#serialization").text(), json: json};
     document.cookie = "queryObject=" + encodeURIComponent(JSON.stringify(obj)) + "; " + expires + "; path=./index.jsp";
-    window.location.href = "./index.jsp";
+    window.location.href = "./index.html";
 }
